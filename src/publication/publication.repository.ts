@@ -21,5 +21,28 @@ export class PublicationRepository {
     deletePublication(id: number){
         return this.prisma.publication.delete({where: {id: id}});
     }
-
+    getPublicationByPostId(postId: number){
+        return this.prisma.publication.findFirst({where: {postId: postId}});
+    }
+    async getPublicationStatus(id: number): Promise<boolean> {
+        const publication = await this.prisma.publication.findUnique({ where: { id } });
+        return publication?.published;
+      }
+      async findPublicationByMediaAndPostId(mediaId: number, postId: number) {
+        return this.prisma.publication.findFirst({
+          where: {
+            mediaId,
+            postId,
+          },
+        });
+      }
+      async findIfIsPublished(mediaId: number) {
+        return this.prisma.publication.findFirst({
+          where: {
+            mediaId,
+            published: true,
+          },
+        });
+          
+      }
 }

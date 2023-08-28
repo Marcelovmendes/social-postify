@@ -12,7 +12,7 @@ datasource db {
 
 model Medias {
   id          Int           @id @default(autoincrement())
-  tittle      String
+  title      String
   username    String
   Publication Publication[]
 
