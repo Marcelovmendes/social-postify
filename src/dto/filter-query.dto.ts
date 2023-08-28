@@ -1,9 +1,9 @@
-import { IsBooleanString, IsDateString } from "class-validator";
+import { Optional } from "@nestjs/common";
+import { IsBooleanString, IsDateString, IsOptional } from "class-validator";
 
 export class QueryFilter {
-    @IsBooleanString()
+   @IsOptional()
     published: string;
- 
-    @IsDateString()
+    @IsOptional()
      after: Date;
   }

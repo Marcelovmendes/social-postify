@@ -10,6 +10,6 @@ import { PublicationRepository } from '../publication/publication.repository';
   controllers: [MediasController],
   imports: [PrismaModule,PublicationModule],
   providers: [MediasService, MediasRepository,PublicationRepository],
-  exports : [MediasService]
+  exports : [MediasService, MediasRepository],
 })
 export class MediasModule {}

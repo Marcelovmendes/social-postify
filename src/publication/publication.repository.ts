@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreatePublicationDto } from '../dto/create-publication.dto';
 
 @Injectable()
 export class PublicationRepository {
 
     constructor(private readonly prisma: PrismaService) {}
     
-    createPublication(body: any) {
-        return this.prisma.publication.create({ data: body });
+    createPublication(body: CreatePublicationDto) {
+        return this.prisma.publication.create({data: body});
     }
     getPublications (published?: boolean, after?:Date){
         const date = new Date()

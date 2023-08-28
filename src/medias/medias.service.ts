@@ -8,6 +8,7 @@ import { PublicationRepository } from '../publication/publication.repository';
 import { MediaLinkedErro } from '../errors/media-linked.error';
 import { UpdateMediaDto } from '../dto/update-media.dto';
 import { CreateMediaDto } from '../dto/create-media.dto';
+import { title } from 'process';
 
 @Injectable()
 export class MediasService {
@@ -30,14 +31,22 @@ export class MediasService {
   async getMedias() {
     const result = await this.repository.getMedias();
     if (!result || !result.length) return [];
-
-    return result;
+    return result.map(media => ({
+      id: media.id,
+      title: media.title,
+      username: media.username,
+    }));
+ 
   }
   async getMediasById(id: number) {
     const result = await this.repository.getMediasById(id);
     if (!result) throw new NotFoundMediaError(id);
-
-    return result;
+  
+    return [{
+      id: result.id,
+      title: result.title,
+      username: result.username,
+    }]
   }
   async updateMedia(id: number, body: UpdateMediaDto) {
     const { title, username } = body;
@@ -50,14 +59,14 @@ export class MediasService {
 
     return await this.repository.updateMedia(id, body);;
   }
-  async deleteMedia(id: number) {
-    const isLinkedTopublication =
-      await this.publicationRepository.findIfIsPublished(id);
-    if (isLinkedTopublication) throw new MediaLinkedErro();
+    async deleteMedia(id: number) {
+      const isLinkedTopublication =
+        await this.publicationRepository.findIfIsPublished(id);
+      if (isLinkedTopublication) throw new MediaLinkedErro();
 
-    const result = await this.repository.getMediasById(id);
-    if (!result) throw new NotFoundMediaError(id);
+      const result = await this.repository.getMediasById(id);
+      if (!result) throw new NotFoundMediaError(id);
 
-    return await this.repository.deleteMedia(id);;
-  }
+      return await this.repository.deleteMedia(id);;
+    }
 }
