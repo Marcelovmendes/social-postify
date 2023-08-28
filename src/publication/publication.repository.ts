@@ -9,8 +9,23 @@ export class PublicationRepository {
     createPublication(body: any) {
         return this.prisma.publication.create({ data: body });
     }
-    getPublications (){
-        return this.prisma.publication.findMany();
+    getPublications (published?: boolean, after?:Date){
+        const date = new Date()
+        return this.prisma.publication.findMany(
+        {
+          where: {
+            date: {
+              lt: published ? date : undefined,
+              gt: published === false ? date : undefined
+            },
+            AND: {
+              date: {
+                gt: after ? new Date(after) : undefined,
+              }
+            }
+          }
+        }
+        );
     }
     getPublicationsById(id: number){
         return this.prisma.publication.findUnique({where: {id: id}});
@@ -24,9 +39,9 @@ export class PublicationRepository {
     getPublicationByPostId(postId: number){
         return this.prisma.publication.findFirst({where: {postId: postId}});
     }
-    async getPublicationStatus(id: number): Promise<boolean> {
+    async getPublicationStatus(id: number) {
         const publication = await this.prisma.publication.findUnique({ where: { id } });
-        return publication?.published;
+     
       }
       async findPublicationByMediaAndPostId(mediaId: number, postId: number) {
         return this.prisma.publication.findFirst({
@@ -39,8 +54,7 @@ export class PublicationRepository {
       async findIfIsPublished(mediaId: number) {
         return this.prisma.publication.findFirst({
           where: {
-            mediaId,
-            published: true,
+            mediaId
           },
         });
           

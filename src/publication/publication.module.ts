@@ -8,7 +8,7 @@ import { PublicationController } from './publication.controller';
 @Module({
   imports: [PrismaModule ],
   providers: [PublicationService, PublicationRepository, ],
-  exports : [PublicationService],
+  exports : [PublicationService,PublicationRepository],
   controllers: [PublicationController]
 })
 export class PublicationModule {}

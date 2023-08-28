@@ -12,8 +12,10 @@ datasource db {
 
 model Medias {
   id          Int           @id @default(autoincrement())
-  title      String
+  title       String
   username    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Publication Publication[]
 
   @@map("medias")
@@ -23,16 +25,22 @@ model Posts {
   id          Int           @id @default(autoincrement())
   title       String
   text        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Publication Publication[]
+
+  @@map("posts")
 }
 
 model Publication {
-  id      Int    @id @default(autoincrement())
-  mediaId Int
-  Medias  Medias @relation(fields: [mediaId], references: [id])
-  postId  Int
-  Posts   Posts  @relation(fields: [postId], references: [id])
-  date    DateTime
-  published Boolean
-  
+  id        Int      @id @default(autoincrement())
+  mediaId   Int
+  Medias    Medias   @relation(fields: [mediaId], references: [id])
+  postId    Int
+  Posts     Posts    @relation(fields: [postId], references: [id])
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("publication")
 }

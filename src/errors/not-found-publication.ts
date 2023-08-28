@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
-export class NotFoundPublicationError extends HttpException {
+
+export class NotFoundPublicationError extends  HttpException {
     private _id : number
     constructor(id : number) {
         super(`Publication not found on id: ${id}`, HttpStatus.NOT_FOUND);

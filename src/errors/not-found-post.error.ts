@@ -1,10 +1,10 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { NotFoundException } from "@nestjs/common";
 
-export class NotFoundPostError extends HttpException {
+export class NotFoundPostError extends NotFoundException {
 
     private _id : number
     constructor(id : number) {
-        super(`Post not found on id: ${id}` , HttpStatus.NOT_FOUND);
+        super(`Post not found on id: ${id}`);
         this._id = id
     }
 
