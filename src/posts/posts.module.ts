@@ -9,8 +9,8 @@ import { PostsController } from './posts.controller';
 
 @Module({
   controllers: [PostsController],
-  imports: [PrismaModule, forwardRef(() => PublicationModule)],
+  imports: [PrismaModule,],
   providers: [PostsService, PostsRepository, PublicationRepository],
-  exports : [PostsService, PostsRepository],
+  exports : [],
 })
 export class PostsModule {}

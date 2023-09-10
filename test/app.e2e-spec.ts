@@ -6,33 +6,35 @@ import { PrismaModule } from '../src/prisma/prisma.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { omit } from 'lodash';
 
+let app: INestApplication;
+let prisma: PrismaService;
+
+beforeEach(async () => {
+  const moduleFixture: TestingModule = await Test.createTestingModule({
+    imports: [AppModule, PrismaModule],
+  }).compile();
+
+  app = moduleFixture.createNestApplication();
+  app.useGlobalPipes(new ValidationPipe());
+  prisma = app.get(PrismaService);
+
+  await prisma.publication.deleteMany();
+  await prisma.medias.deleteMany();
+  await prisma.posts.deleteMany();
+
+  await app.init();
+});
+
 describe('AppController (e2e)', () => {
-  let app: INestApplication;
-  let prisma: PrismaService;
-
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, PrismaModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    prisma = app.get(PrismaService);
-
-    await prisma.publication.deleteMany();
-    await prisma.medias.deleteMany();
-    await prisma.posts.deleteMany();
-
-    await app.init();
-  });
-
   it('/health (GET) => Should get an alive message', () => {
     return request(app.getHttpServer())
       .get('/health')
       .expect(200)
       .expect("I'm okay!");
   });
-  it('/medias (Post) Should create a media', async () => {
+});
+describe('/medias (POST)', () =>{
+  it('Should create a media', async () => {
     return request(app.getHttpServer())
       .post('/medias')
       .send({
@@ -41,7 +43,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.CREATED);
   });
-  it('/medias (Post) Should duplicate error on medias ', async () => {
+  it('Should duplicate error on medias ', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -60,7 +62,7 @@ describe('AppController (e2e)', () => {
     });
     expect(result).toBeTruthy();
   });
-  it('/medias (Post) Should return Bad Request when missing fields', async () => {
+  it('Should return Bad Request when missing fields', async () => {
     return request(app.getHttpServer())
       .post('/medias')
       .send({
@@ -68,7 +70,9 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
-  it('/medias (Get) Should return all medias', async () => {
+})
+describe('/medias (GET)', () => {
+  it('Should return all medias', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -88,13 +92,15 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it('/medias (Get) Should return void array if no medias ', async () => {
+  it('Should return void array if no medias ', async () => {
     const response = await request(app.getHttpServer())
       .get('/medias')
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
   });
-  it('/medias/:id (Get) Should  return a media', async () => {
+})
+describe('/medias/:id (GET)', () => {
+  it('Should return a media', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -115,12 +121,14 @@ describe('AppController (e2e)', () => {
     const resultWithoutTimestamps = omit(result, ['createdAt', 'updatedAt']);
     expect(resultWithoutTimestamps).toEqual(expectedMidia);
   });
-  it('/medias/:id (Get) Should return 404 if media not found', async () => {
+  it('Should return 404 if media not found', async () => {
     await request(app.getHttpServer())
       .get('/medias/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-  it('/medias/:id (Put) Should update a media', async () => {
+})
+describe ('/medias/:id (PUT)', () => {
+  it('Should update a media', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -141,7 +149,7 @@ describe('AppController (e2e)', () => {
     expect(result.title).toBe('Tiktok');
     expect(result.username).toBe('marcelo');
   });
-  it('/medias/:id (Put) Should return 409 if title and username are not unique', async () => {
+  it('Should return 409 if title and username are not unique', async () => {
     const media1 = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -164,7 +172,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.CONFLICT);
   });
-  it('/medias/:id (Put) Should update media if title and username are unique', async () => {
+  it('Should update media if title and username are unique', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -188,7 +196,9 @@ describe('AppController (e2e)', () => {
     expect(result.title).toBe('Tiktok');
     expect(result.username).toBe('carlos');
   });
-  it('/medias/:id (Delete) Should delete a media', async () => {
+})
+describe('/medias/:id (DELETE)', () => {
+  it('Should delete a media', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -199,12 +209,12 @@ describe('AppController (e2e)', () => {
       .delete(`/medias/${media.id}`)
       .expect(HttpStatus.OK);
   });
-  it('/medias/:id (Delete) Should return 404 if media not found', async () => {
+  it('Should return 404 if media not found', async () => {
     await request(app.getHttpServer())
       .delete('/medias/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-  it('/medias/:id (Delete) Should return 403 if media is linked', async () => {
+  it('Should return 403 if media is linked', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -230,7 +240,9 @@ describe('AppController (e2e)', () => {
       .delete(`/medias/${media.id}`)
       .expect(HttpStatus.FORBIDDEN);
   });
-  it('/posts (Post) Should create a post', async () => {
+})
+describe('/posts (POST)', () => {
+  it('Should create a post', async () => {
     return request(app.getHttpServer())
       .post('/posts')
       .send({
@@ -239,7 +251,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.CREATED);
   });
-  it('/posts (Post) Should return Bad Request when missing fields', async () => {
+  it('Should return Bad Request when missing fields', async () => {
     return request(app.getHttpServer())
       .post('/posts')
       .send({
@@ -247,7 +259,10 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
-  it('/posts (Get) Should return all posts', async () => {
+}
+)
+describe('/posts (GET)', () => {
+  it('Should return all posts', async () => {
     const post = await prisma.posts.create({
       data: {
         title: 'facebook',
@@ -267,13 +282,15 @@ describe('AppController (e2e)', () => {
       ]),
     );
   });
-  it('/posts (Get) Should return void array if no posts ', async () => {
+  it('Should return void array if no posts ', async () => {
     const response = await request(app.getHttpServer())
       .get('/posts')
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
-  });
-  it('/posts/:id (Get) Should return a post ', async () => {
+  }); 
+})
+describe('/posts/:id (GET)', () => {
+  it('Should return a post ', async () => {
     const post = await prisma.posts.create({
       data: {
         title: 'facebook',
@@ -295,12 +312,14 @@ describe('AppController (e2e)', () => {
     const resultWithoutTimestamps = omit(result, ['createdAt', 'updatedAt']);
     expect(resultWithoutTimestamps).toEqual(espectedPost);
   });
-  it('/posts/:id (Get) Should return 404 if post not found', async () => {
+  it('Should return 404 if post not found', async () => {
     await request(app.getHttpServer())
       .get('/posts/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-  it('/posts/:id (Put) Should update a post', async () => {
+})
+describe('/posts/:id (PUT)', () => {
+  it('Should update a post', async () => {
     const post = await prisma.posts.create({
       data: {
         title: 'facebook',
@@ -321,7 +340,7 @@ describe('AppController (e2e)', () => {
     expect(result.title).toBe('Tiktok');
     expect(result.text).toBe('marcelo');
   });
-  it('/posts/:id (Put) Should return 404 if post not found', async () => {
+  it('Should return 404 if post not found', async () => {
     await request(app.getHttpServer())
       .put('/posts/1')
       .send({
@@ -329,8 +348,10 @@ describe('AppController (e2e)', () => {
         text: 'marcelo',
       })
       .expect(HttpStatus.NOT_FOUND);
-  });
-  it('/posts/:id (Delete) Should delete a post', async () => {
+  }); 
+})
+describe('/posts/:id (DELETE)', () => {
+  it('Should delete a post', async () => {
     const post = await prisma.posts.create({
       data: {
         title: 'facebook',
@@ -345,12 +366,12 @@ describe('AppController (e2e)', () => {
     });
     expect(find).toBeFalsy();
   });
-  it('/posts/:id (Delete) Should return 404 if post not found', async () => {
+  it('Should return 404 if post not found', async () => {
     await request(app.getHttpServer())
       .delete('/posts/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-  it('/posts/:id (Delete) Should return 403 if post is linked', async () => {
+  it('Should return 403 if post is linked', async () => {
     const post = await prisma.posts.create({
       data: {
         title: 'facebook',
@@ -376,7 +397,9 @@ describe('AppController (e2e)', () => {
       .delete(`/posts/${post.id}`)
       .expect(HttpStatus.FORBIDDEN);
   });
-  it('/publications (Post) Should create a publication', async () => {
+})
+describe( '/publications (POST)', () => {
+  it('Should create a publication', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -399,7 +422,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.CREATED);
   });
-  it('/publications (Post) Should return Bad Request when missing fields', async () => {
+  it('Should return Bad Request when missing fields', async () => {
     return request(app.getHttpServer())
       .post('/publications')
       .send({
@@ -407,7 +430,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
-  it('/publications (Post) If mediaId or postId not found', async () => {
+  it('If mediaId or postId not found', async () => {
     await request(app.getHttpServer())
       .post('/publications')
       .send({
@@ -416,8 +439,10 @@ describe('AppController (e2e)', () => {
         date: '2023-08-21T13:25:17.352Z',
       })
       .expect(HttpStatus.NOT_FOUND);
-  });
-  it('/publications (Get) Should return all publications', async () => {
+  }); 
+})
+describe('/publications (GET)', () => {
+  it('Should return all publications', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -455,13 +480,15 @@ describe('AppController (e2e)', () => {
 
     expect(receivedPublication).toEqual(expectedPublication);
   });
-  it('/publications (Get) Should return void array if no publications ', async () => {
+  it('Should return void array if no publications ', async () => {
     const response = await request(app.getHttpServer())
       .get('/publications')
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
-  });
-  it('/publications/:id (Get) Should return a publication ', async () => {
+  }); 
+})
+describe('/publications/:id (GET)', () => {
+  it('Should return a publication ', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -496,12 +523,14 @@ describe('AppController (e2e)', () => {
     const resultWithoutTimestamps = omit(result, ['createdAt', 'updatedAt']);
     expect(resultWithoutTimestamps).toEqual(expectedPublication);
   });
-  it('/publications/:id (Get) Should return 404 if publication not found', async () => {
+  it('Should return 404 if publication not found', async () => {
     await request(app.getHttpServer())
       .get('/publications/1')
       .expect(HttpStatus.NOT_FOUND);
-  });
-  it('/publications/:id (Put) If not found should return 404', async () => {
+  }); 
+})
+describe('/publications/:id (PUT)', () => {
+  it(' If not found should return 404', async () => {
     await request(app.getHttpServer())
       .put('/publications/1')
       .send({
@@ -512,7 +541,9 @@ describe('AppController (e2e)', () => {
 
       .expect(HttpStatus.NOT_FOUND);
   });
-  it('/publications/:id (Delete) Should delete a publication', async () => {
+})
+describe('/publications/:id (DELETE)', () => {
+  it('Should delete a publication', async () => {
     const media = await prisma.medias.create({
       data: {
         title: 'facebook',
@@ -536,9 +567,11 @@ describe('AppController (e2e)', () => {
       .delete(`/publications/${publication.id}`)
       .expect(HttpStatus.OK);
   });
-  it('/publications/:id (Delete) Should return 404 if publication not found', async () => {
+  it('Should return 404 if publication not found', async () => {
     await request(app.getHttpServer())
       .delete('/publications/1')
       .expect(HttpStatus.NOT_FOUND);
-  });
-});
+  }); 
+})
+
+

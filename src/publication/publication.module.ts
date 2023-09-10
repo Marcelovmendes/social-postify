@@ -11,7 +11,7 @@ import { PostsRepository } from '../posts/posts.repositoy';
 
 @Module({
   controllers: [PublicationController],
-  imports: [PrismaModule, forwardRef(() => MediasModule), forwardRef(() => PostsModule) ],
+  imports: [PrismaModule, ],
   providers: [PublicationService, PublicationRepository, MediasRepository,PostsRepository ],
   exports : [PublicationService,PublicationRepository],
 })
