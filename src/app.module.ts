@@ -6,8 +6,6 @@ import { MediasModule } from './medias/medias.module';
 import { PostsModule } from './posts/posts.module';
 import { PublicationModule } from './publication/publication.module';
 
-
-
 @Module({
   imports: [PrismaModule, MediasModule, PostsModule, PublicationModule],
   controllers: [AppController],

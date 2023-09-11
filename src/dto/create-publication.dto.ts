@@ -1,15 +1,15 @@
-import { IsDateString, IsInt, IsNotEmpty, isPositive } from "class-validator"
+import { IsDateString, IsInt, IsNotEmpty, isPositive } from 'class-validator';
 
 export class CreatePublicationDto {
-    @IsInt()
-    @IsNotEmpty()
-    mediaId: number;
+  @IsInt()
+  @IsNotEmpty()
+  mediaId: number;
 
-    @IsInt()
-    @IsNotEmpty()
-    postId: number;
+  @IsInt()
+  @IsNotEmpty()
+  postId: number;
 
-    @IsDateString()
-    @IsNotEmpty()
-    date: Date
+  @IsDateString()
+  @IsNotEmpty()
+  date: Date;
 }

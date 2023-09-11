@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
       .expect("I'm okay!");
   });
 });
-describe('/medias (POST)', () =>{
+describe('/medias (POST)', () => {
   it('Should create a media', async () => {
     return request(app.getHttpServer())
       .post('/medias')
@@ -70,7 +70,7 @@ describe('/medias (POST)', () =>{
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
-})
+});
 describe('/medias (GET)', () => {
   it('Should return all medias', async () => {
     const media = await prisma.medias.create({
@@ -98,7 +98,7 @@ describe('/medias (GET)', () => {
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
   });
-})
+});
 describe('/medias/:id (GET)', () => {
   it('Should return a media', async () => {
     const media = await prisma.medias.create({
@@ -126,8 +126,8 @@ describe('/medias/:id (GET)', () => {
       .get('/medias/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-})
-describe ('/medias/:id (PUT)', () => {
+});
+describe('/medias/:id (PUT)', () => {
   it('Should update a media', async () => {
     const media = await prisma.medias.create({
       data: {
@@ -196,7 +196,7 @@ describe ('/medias/:id (PUT)', () => {
     expect(result.title).toBe('Tiktok');
     expect(result.username).toBe('carlos');
   });
-})
+});
 describe('/medias/:id (DELETE)', () => {
   it('Should delete a media', async () => {
     const media = await prisma.medias.create({
@@ -240,7 +240,7 @@ describe('/medias/:id (DELETE)', () => {
       .delete(`/medias/${media.id}`)
       .expect(HttpStatus.FORBIDDEN);
   });
-})
+});
 describe('/posts (POST)', () => {
   it('Should create a post', async () => {
     return request(app.getHttpServer())
@@ -259,8 +259,7 @@ describe('/posts (POST)', () => {
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
-}
-)
+});
 describe('/posts (GET)', () => {
   it('Should return all posts', async () => {
     const post = await prisma.posts.create({
@@ -287,8 +286,8 @@ describe('/posts (GET)', () => {
       .get('/posts')
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
-  }); 
-})
+  });
+});
 describe('/posts/:id (GET)', () => {
   it('Should return a post ', async () => {
     const post = await prisma.posts.create({
@@ -317,7 +316,7 @@ describe('/posts/:id (GET)', () => {
       .get('/posts/1')
       .expect(HttpStatus.NOT_FOUND);
   });
-})
+});
 describe('/posts/:id (PUT)', () => {
   it('Should update a post', async () => {
     const post = await prisma.posts.create({
@@ -348,8 +347,8 @@ describe('/posts/:id (PUT)', () => {
         text: 'marcelo',
       })
       .expect(HttpStatus.NOT_FOUND);
-  }); 
-})
+  });
+});
 describe('/posts/:id (DELETE)', () => {
   it('Should delete a post', async () => {
     const post = await prisma.posts.create({
@@ -397,8 +396,8 @@ describe('/posts/:id (DELETE)', () => {
       .delete(`/posts/${post.id}`)
       .expect(HttpStatus.FORBIDDEN);
   });
-})
-describe( '/publications (POST)', () => {
+});
+describe('/publications (POST)', () => {
   it('Should create a publication', async () => {
     const media = await prisma.medias.create({
       data: {
@@ -439,8 +438,8 @@ describe( '/publications (POST)', () => {
         date: '2023-08-21T13:25:17.352Z',
       })
       .expect(HttpStatus.NOT_FOUND);
-  }); 
-})
+  });
+});
 describe('/publications (GET)', () => {
   it('Should return all publications', async () => {
     const media = await prisma.medias.create({
@@ -485,8 +484,8 @@ describe('/publications (GET)', () => {
       .get('/publications')
       .expect(HttpStatus.OK);
     expect(response.body).toEqual([]);
-  }); 
-})
+  });
+});
 describe('/publications/:id (GET)', () => {
   it('Should return a publication ', async () => {
     const media = await prisma.medias.create({
@@ -527,8 +526,8 @@ describe('/publications/:id (GET)', () => {
     await request(app.getHttpServer())
       .get('/publications/1')
       .expect(HttpStatus.NOT_FOUND);
-  }); 
-})
+  });
+});
 describe('/publications/:id (PUT)', () => {
   it(' If not found should return 404', async () => {
     await request(app.getHttpServer())
@@ -541,7 +540,7 @@ describe('/publications/:id (PUT)', () => {
 
       .expect(HttpStatus.NOT_FOUND);
   });
-})
+});
 describe('/publications/:id (DELETE)', () => {
   it('Should delete a publication', async () => {
     const media = await prisma.medias.create({
@@ -571,7 +570,5 @@ describe('/publications/:id (DELETE)', () => {
     await request(app.getHttpServer())
       .delete('/publications/1')
       .expect(HttpStatus.NOT_FOUND);
-  }); 
-})
-
-
+  });
+});

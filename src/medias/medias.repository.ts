@@ -11,21 +11,21 @@ export class MediasRepository {
     const { title, username } = body;
     return this.prisma.medias.create({ data: { title, username } });
   }
-  getMedias (){
+  getMedias() {
     return this.prisma.medias.findMany();
   }
-  getMediasById(id: number){
-    return this.prisma.medias.findUnique({where: {id: id}});
+  getMediasById(id: number) {
+    return this.prisma.medias.findUnique({ where: { id: id } });
   }
-  updateMedia(id: number, body: UpdateMediaDto){
-    return this.prisma.medias.update({where: {id: id}, data: body});
+  updateMedia(id: number, body: UpdateMediaDto) {
+    return this.prisma.medias.update({ where: { id: id }, data: body });
   }
-  deleteMedia(id: number){
-    return this.prisma.medias.delete({where: {id: id}});
+  deleteMedia(id: number) {
+    return this.prisma.medias.delete({ where: { id: id } });
   }
-   existMidia(title: string, username: string){
+  existMidia(title: string, username: string) {
     return this.prisma.medias.findFirst({
-        where: { title: title, username: username }
-      });
-   }
+      where: { title: title, username: username },
+    });
+  }
 }

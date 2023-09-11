@@ -34,10 +34,10 @@ export class PostsService {
     return result;
   }
   async updatePost(id: number, body: UpdatePostDto) {
-     const post = await this.repository.getPostsById(id);
-       if(!post)  throw new NotFoundPostError(id);
-      const result = await this.repository.updatePost(id, body);
-      return result;
+    const post = await this.repository.getPostsById(id);
+    if (!post) throw new NotFoundPostError(id);
+    const result = await this.repository.updatePost(id, body);
+    return result;
   }
   async deletePost(id: number) {
     const result = await this.repository.getPostsById(id);

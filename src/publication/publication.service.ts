@@ -11,27 +11,29 @@ import { PostsRepository } from '../posts/posts.repositoy';
 
 @Injectable()
 export class PublicationService {
-  constructor(private readonly repository: PublicationRepository,
+  constructor(
+    private readonly repository: PublicationRepository,
     private readonly mediasRepository: MediasRepository,
-    private readonly postsRepository: PostsRepository
-    ) {}
+    private readonly postsRepository: PostsRepository,
+  ) {}
 
   async createPublication(body: CreatePublicationDto) {
     const { mediaId, postId } = body;
     const requireFields = ['mediaId', 'postId', 'date'];
     const missingFields = requireFields.filter((field) => !body[field]);
-  
+
     if (missingFields.length) throw new MissingFieldsError(missingFields);
 
-     const postExist = await  this.postsRepository.getPostsById(postId);
-     const mediaExist = await this.mediasRepository.getMediasById(mediaId);
+    const postExist = await this.postsRepository.getPostsById(postId);
+    const mediaExist = await this.mediasRepository.getMediasById(mediaId);
 
-    if (!postExist || !mediaExist) throw new PublicationInfoNotFoundError(mediaId, postId);
+    if (!postExist || !mediaExist)
+      throw new PublicationInfoNotFoundError(mediaId, postId);
     const result = await this.repository.createPublication(body);
     return result;
   }
   async getPublications(published?: boolean, after?: Date) {
-    const result = await this.repository.getPublications( published, after);
+    const result = await this.repository.getPublications(published, after);
     if (!result || !result.length) return [];
 
     return result;
@@ -43,24 +45,25 @@ export class PublicationService {
     return result;
   }
   async updatePublication(id: number, body: UpdatePublicationDto) {
-    const today = new Date(Date.now() );
+    const today = new Date(Date.now());
     const { mediaId, postId } = body;
 
     const publication = await this.repository.getPublicationByPostId(id);
-    console.log(publication)
+    console.log(publication);
     if (publication?.date < today) throw new PublicationForbiddenError(id);
 
-    const postExist = await  this.postsRepository.getPostsById(postId);
+    const postExist = await this.postsRepository.getPostsById(postId);
     const mediaExist = await this.mediasRepository.getMediasById(mediaId);
 
-   if (!postExist || !mediaExist) throw new PublicationInfoNotFoundError(mediaId, postId);
+    if (!postExist || !mediaExist)
+      throw new PublicationInfoNotFoundError(mediaId, postId);
 
     return await this.repository.updatePublication(id, body);
   }
   async deletePublication(id: number) {
     const result = await this.repository.getPublicationsById(id);
     if (!result) throw new NotFoundPublicationError(id);
- 
+
     return await this.repository.deletePublication(id);
   }
 }

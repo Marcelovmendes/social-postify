@@ -6,11 +6,10 @@ import { PublicationModule } from '../publication/publication.module';
 import { PublicationRepository } from '../publication/publication.repository';
 import { PostsController } from './posts.controller';
 
-
 @Module({
   controllers: [PostsController],
-  imports: [PrismaModule,],
+  imports: [PrismaModule],
   providers: [PostsService, PostsRepository, PublicationRepository],
-  exports : [],
+  exports: [],
 })
 export class PostsModule {}

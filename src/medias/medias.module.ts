@@ -8,8 +8,8 @@ import { PublicationRepository } from '../publication/publication.repository';
 
 @Module({
   controllers: [MediasController],
-  imports: [PrismaModule,PublicationModule],
-  providers: [MediasService, MediasRepository,PublicationRepository],
-  exports : [MediasService, MediasRepository],
+  imports: [PrismaModule, PublicationModule],
+  providers: [MediasService, MediasRepository, PublicationRepository],
+  exports: [MediasService, MediasRepository],
 })
 export class MediasModule {}
