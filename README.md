@@ -26,7 +26,7 @@ $ npx prisma migrate dev
 $ npx prisma generate
 ```
 
-## Running the app
+## Run the app
 
 ```bash
 # development
