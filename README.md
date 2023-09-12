@@ -1,7 +1,7 @@
 # 🗓️ Social-Postify
 
-
 ## 📝 Description
+
 "Social Postify" is a web application that allows users to create and schedule posts for multiple social media platforms such as Facebook, Instagram, Twitter, and LinkedIn. Users can craft customized posts with images, headlines, text, and choose specific dates and times for each post. The system supports scheduling multiple posts and provides a clear overview of the scheduled posts.
 
 ## Installation
@@ -9,13 +9,16 @@
 ```bash
 $ npm install
 ```
-## Setting up the app
 
-Rename one of the files to .env
+## Environment Setup
 
-Rename the other file to .env.test
+Rename one of the files to .env.
 
-Make sure to change the variables and giving the .env.test its own database
+Rename the other file to .env.test.
+
+Be sure to modify the variables in the .env file as needed.
+
+Ensure that the .env.test file has its dedicated database configuration.
 
 ```bash
 #init prima
@@ -55,4 +58,3 @@ $ npm run test:prisma
 ## License
 
 Nest is [MIT licensed](LICENSE).
-
