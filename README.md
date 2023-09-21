@@ -4,6 +4,13 @@
 
 "Social Postify" is a web application that allows users to create and schedule posts for multiple social media platforms such as Facebook, Instagram, Twitter, and LinkedIn. Users can craft customized posts with images, headlines, text, and choose specific dates and times for each post. The system supports scheduling multiple posts and provides a clear overview of the scheduled posts.
 
+## Technologies Used
+
+- Nestjs
+- TypeScript
+- ORM Prisma
+- Jest
+
 ## Installation
 
 ```bash
